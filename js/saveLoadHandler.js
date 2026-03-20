@@ -34,24 +34,38 @@ function initializeSaveLoadHandler(canvas, saveDesignBtn, loadDesignBtn, loadDes
     });
 
     loadDesignInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files && e.target.files[0];
         if (file) {
+            if (file.type && file.type !== 'application/json' && !file.name.endsWith('.json')) {
+                alert('Please choose a valid JSON design file.');
+                loadDesignInput.value = '';
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = (f) => {
-                canvas.loadFromJSON(f.target.result, () => {
-                    canvas.renderAll();
-                    // Re-select the active text object if it was a textbox
-                    const objects = canvas.getObjects();
-                    const textObjects = objects.filter(obj => obj.type === 'textbox');
-                    if (textObjects.length > 0) {
-                        activeTextObject = textObjects[0]; // Select the first text object by default
-                        canvas.setActiveObject(activeTextObject);
-                        updateControls(activeTextObject);
-                    } else {
-                        activeTextObject = null;
-                        resetControls();
-                    }
-                });
+                try {
+                    const parsedDesign = JSON.parse(f.target.result);
+                    canvas.loadFromJSON(parsedDesign, () => {
+                        canvas.renderAll();
+
+                        const objects = canvas.getObjects();
+                        const textObjects = objects.filter(obj => obj.type === 'textbox');
+                        if (textObjects.length > 0) {
+                            activeTextObject = textObjects[0];
+                            canvas.setActiveObject(activeTextObject);
+                            updateControls(activeTextObject);
+                        } else {
+                            activeTextObject = null;
+                            resetControls();
+                        }
+                    });
+                } catch (error) {
+                    console.error('Failed to load design file:', error);
+                    alert('Could not load this design file. Please check that it is valid JSON.');
+                } finally {
+                    loadDesignInput.value = '';
+                }
             };
             reader.readAsText(file);
         }

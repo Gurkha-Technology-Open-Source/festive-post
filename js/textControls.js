@@ -228,6 +228,11 @@ function initializeTextControls(canvas, activeTextObject, companyNameInput, bran
 
     // Add initial text object
     addTextObject('Your Company Name');
+
+    return {
+        updateControls,
+        resetControls
+    };
 }
 
-export { initializeTextControls, updateControls, resetControls };
+export { initializeTextControls };

@@ -16,13 +16,26 @@ function initializeDownloadHandler(canvas, downloadBtn, downloadFormatSelect) {
     // Event listener
     downloadBtn.addEventListener('click', () => {
         const format = downloadFormatSelect.value;
+        const previousLabel = downloadBtn.textContent;
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = 'Preparing download...';
+
         canvas.toBlob((blob) => {
+            if (!blob) {
+                alert('Failed to generate image. Please try again.');
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = previousLabel;
+                return;
+            }
+
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = `festive-post.${format}`;
             link.click();
             URL.revokeObjectURL(url);
+            downloadBtn.disabled = false;
+            downloadBtn.textContent = previousLabel;
         }, `image/${format}`, 1); // Quality 1 for best quality
     });
 }
