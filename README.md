@@ -1,70 +1,139 @@
+# Festive Post Generator
 
-# Festive Post Generator for Businesses
-
-This is a fully client-side web application that allows users to create festive posts for their businesses. Users can upload their logo, enter their company name, select a brand color, and choose from a variety of festive templates to generate a social media-ready post.
+A fully client-side web app to create stunning festive social media posts with custom logos, text effects, live preview, and instant downloads.
 
 ## Features
 
-- **Client-Side Image Editing:** All image processing is done in the browser using the Fabric.js library.
-- **Customizable Templates:** Easily add or modify templates by updating a JSON file.
-- **Logo and Text Overlay:** Overlay your company logo and name onto any template.
-- **Color Picker:** Choose a brand color to apply to the text.
-- **Real-time Preview:** See your changes reflected in real-time on the canvas.
-- **Downloadable Posts:** Download the final post as a 1080x1080 PNG file, perfect for social media.
-- **Responsive Design:** The application is designed to work on both desktop and mobile devices.
+- **Zero Dependencies Setup:** Entirely browser-based; no server or installation required.
+- **Advanced Text Styling:** Font family, size, rotation, alignment, outline width, shadow (blur/offset/color).
+- **Logo Management:** Upload PNG/JPG/SVG logos with opacity control and canvas positioning.
+- **Image Filters:** Grayscale, sepia, and invert effects for template backgrounds.
+- **Template Gallery:** Browse and filter by category with lazy-loaded thumbnails.
+- **Live Preview:** See all changes in real-time on the 1080×1080 canvas.
+- **Save & Load:** Export designs as JSON and resume editing anytime.
+- **Export Formats:** Download as PNG or JPEG with quality control.
+- **Responsive Design:** Optimized for desktop, tablet, and mobile.
+- **Accessible:** Full keyboard navigation, ARIA labels, and focus indicators.
 
-## How to Use
+## Quick Start
 
-1.  **Open the Application:** Simply open the `index.html` file in your web browser.
-2.  **Upload Your Logo:** Click the "Upload Logo" button to select your company's logo (PNG, JPG, or SVG).
-3.  **Enter Company Name:** Type your company's name in the text field.
-4.  **Choose Brand Color:** Use the color picker to select your brand's primary color.
-5.  **Select a Template:** Click on a template from the gallery to apply it to the canvas.
-6.  **Preview and Download:** The preview will update as you make changes. Once you are happy with the result, click the "Download Post" button to save it as a PNG file.
+1. **Open:** Double-click `index.html` or drag it to your browser.
+2. **Add Logo:** Upload or drag-and-drop PNG, JPG, or SVG.
+3. **Add Text:** Type in the text field or click canvas to select existing text.
+4. **Style:** Use left panel to adjust font, size, color, shadows, outlines, rotation.
+5. **Template:** Search or browse templates by category.
+6. **Effects:** Apply filters (grayscale, sepia, invert) to backgrounds.
+7. **Save (Optional):** Click "Save Design" to export as JSON for later.
+8. **Download:** Choose format and click "Download Post".
+
+## Tips
+
+- *Range sliders* display live values (e.g., "60px", "45deg") as you adjust.
+- *Keyboard users* can Tab through controls and press Enter/Space to activate.
+- *Multiple text boxes*: Click "Add New Text Box" to layer additional text.
+- *Logo selection*: Uploaded logos become the active object; adjust opacity for backgrounds.
+- *Search templates* by name or filter by category (Holiday, New Year, etc.).
 
 ## Customization
 
-### Adding New Templates
+### Adding Templates
 
-1.  **Add Template Images:** Place your new template images (e.g., `my-template.png`) in the `templates/` directory.
-2.  **Update `templates.json`:** Open the `templates/templates.json` file and add a new entry for your template. Follow this format:
+1. Create a 1080×1080 (or larger) template image.
+2. Place it in `templates/` folder.
+3. Add entry to `templates/templates.json`:
 
-    ```json
-    {
-      "name": "My Awesome Template",
-      "thumbnail": "templates/my-template.png",
-      "path": "templates/my-template.png"
-    }
-    ```
+```json
+{
+  "name": "My Holiday Template",
+  "thumbnail": "templates/my-template-thumb.png",
+  "path": "templates/my-template.png",
+  "category": "Holiday"
+}
+```
 
-    *   `name`: The name of the template that will be displayed.
-    *   `thumbnail`: The path to the thumbnail image (usually the same as the full image).
-    *   `path`: The path to the full-size template image.
+- `name`: Displayed in gallery
+- `thumbnail`: Preview image (lazy-loaded)
+- `path`: Full-resolution template
+- `category`: Filter grouping
 
-### Modifying Styles
+### Styling
 
-- The visual appearance of the application can be customized by editing the `style.css` file.
+Edit `style.css` to customize:
+
+- **Color theme:** Update `:root` CSS variables (e.g., `--accent: #c93f2d`)
+- **Typography:** Add Google Fonts or change font families
+- **Layout:** Adjust flexbox/grid properties and breakpoints
+- **Components:** Tweak padding/margins on `.control-group`, buttons, etc.
 
 ## Project Structure
 
 ```
-/
-|-- index.html
-|-- style.css
-|-- script.js
-|-- templates/
-|   |-- template1.png
-|   |-- template2.png
-|   |-- ...
-|   `-- templates.json
-|-- assets/
-|   `-- logo-placeholder.png
-`-- README.md
+festive-post/
+├── index.html                 # App entry point
+├── style.css                  # Responsive, theme-aware styles
+├── script.js                  # Module coordinator
+├── package.json               # Build & dependency config
+├── js/
+│   ├── textControls.js        # Text styling & layer management
+│   ├── imageControls.js       # Logo upload & filters
+│   ├── templateHandler.js     # Template loading & display
+│   ├── saveLoadHandler.js     # JSON import/export
+│   └── downloadHandler.js     # PNG/JPEG export
+├── templates/
+│   ├── templates.json         # Metadata & categories
+│   ├── template1.png
+│   └── template2.png
+├── assets/                    # Static images & fonts
+├── dist/                      # Minified build (npm run build)
+└── README.md
 ```
 
-## Technologies Used
+## Build & Development
 
-- HTML5
-- CSS3
-- JavaScript
-- [Fabric.js](http://fabricjs.com/)
+```bash
+npm install          # Install dev tools (terser, css-minify)
+npm run dev          # Display development instructions
+npm run build        # Minify JS/CSS to /dist
+npm test             # Test placeholder
+```
+
+## Technologies
+
+- **HTML5:** Semantic, accessible markup
+- **CSS3:** Modern layout (grid/flexbox), CSS variables, responsive design
+- **JavaScript (ES6+ Modules):** Clean, event-driven architecture
+- **[Fabric.js](https://fabricjs.com/):** Canvas rendering & manipulation
+- **Google Fonts:** Playfair Display, Manrope
+
+## Browser Support
+
+- Chrome/Edge 88+
+- Firefox 78+
+- Safari 14+
+- Modern mobile browsers
+
+## Performance
+
+- **Lazy-loaded templates:** IntersectionObserver defers image loading
+- **Client-side only:** No external API calls (except Fabric.js CDN)
+- **Optimized canvas:** 1080×1080 at 80% quality
+- **Minified build:** Terser compresses JS; css-minify compresses CSS
+
+## Code Quality
+
+- **Modular architecture:** Separation of concerns across document handlers
+- **Error handling:** Graceful fallbacks for failed uploads/loads/exports
+- **Accessibility:** Full keyboard support, ARIA labels, focus management
+- **Safe JSON parsing:** Try/catch around design file imports
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+ISC (see [LICENSE](LICENSE))
+
+---
+
+**Built with ❤️ for festive creatives everywhere.**
