@@ -36,7 +36,7 @@ function initializeSaveLoadHandler(canvas, saveDesignBtn, loadDesignBtn, loadDes
     loadDesignInput.addEventListener('change', (e) => {
         const file = e.target.files && e.target.files[0];
         if (file) {
-            if (file.type && file.type !== 'application/json' && !file.name.endsWith('.json')) {
+            if (file.type && file.type !== 'application/json' && !file.name.toLowerCase().endsWith('.json')) {
                 alert('Please choose a valid JSON design file.');
                 loadDesignInput.value = '';
                 return;

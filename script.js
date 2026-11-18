@@ -77,11 +77,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to select a template
     function selectTemplate(path) {
         fabric.Image.fromURL(path, (img) => {
+            if (!img || !img.width || !img.height) {
+                alert('Could not load that template image.');
+                return;
+            }
+
+            const currentFilters = canvas.backgroundImage && canvas.backgroundImage.width
+                ? canvas.backgroundImage.filters
+                : [];
             canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
                 scaleX: canvas.width / img.width,
                 scaleY: canvas.height / img.height,
-                // Apply current filter if any
-                filters: canvas.backgroundImage.filters || []
+                filters: currentFilters || []
             });
         });
     }
@@ -95,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for the search input
     searchInput.addEventListener('input', () => {
         const activeCategoryButton = document.querySelector('.category-btn.active');
-        const activeCategory = activeCategoryButton ? activeCategoryButton.textContent.toLowerCase() : 'all';
+        const activeCategory = activeCategoryButton ? activeCategoryButton.dataset.category : 'all';
         displayTemplates(templates, activeCategory, searchInput.value, templateGallery, selectTemplate);
     });
 });

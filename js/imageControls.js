@@ -25,7 +25,7 @@ function initializeImageControls(canvas, logoUpload, dropZone, logoOpacityInput,
             activeButton.classList.add('active');
         }
 
-        if (!canvas.backgroundImage) {
+        if (!canvas.backgroundImage || !canvas.backgroundImage.width || typeof canvas.backgroundImage.applyFilters !== 'function') {
             return;
         }
 
@@ -87,6 +87,7 @@ function initializeImageControls(canvas, logoUpload, dropZone, logoOpacityInput,
 
         if (!file.type.startsWith('image/')) {
             alert('Please upload a valid image file.');
+            logoUpload.value = '';
             return;
         }
 
@@ -115,6 +116,7 @@ function initializeImageControls(canvas, logoUpload, dropZone, logoOpacityInput,
                 const ctx = tempCanvas.getContext('2d');
 
                 if (!ctx) {
+                    logoUpload.value = '';
                     return;
                 }
 

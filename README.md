@@ -4,16 +4,16 @@ A fully client-side web app to create stunning festive social media posts with c
 
 ## Features
 
-- **Zero Dependencies Setup:** Entirely browser-based; no server or installation required.
+- **Browser-based:** Open `index.html` locally. Editing does not need a server or an install.
 - **Advanced Text Styling:** Font family, size, rotation, alignment, outline width, shadow (blur/offset/color).
 - **Logo Management:** Upload PNG/JPG/SVG logos with opacity control and canvas positioning.
 - **Image Filters:** Grayscale, sepia, and invert effects for template backgrounds.
 - **Template Gallery:** Browse and filter by category with lazy-loaded thumbnails.
 - **Live Preview:** See all changes in real-time on the 1080×1080 canvas.
 - **Save & Load:** Export designs as JSON and resume editing anytime.
-- **Export Formats:** Download as PNG or JPEG with quality control.
+- **Export Formats:** Download as PNG or JPEG.
 - **Responsive Design:** Optimized for desktop, tablet, and mobile.
-- **Accessible:** Full keyboard navigation, ARIA labels, and focus indicators.
+- **Accessible:** Keyboard access for the logo drop zone, filters, and template gallery, plus ARIA labels and focus indicators.
 
 ## Quick Start
 
@@ -32,7 +32,7 @@ A fully client-side web app to create stunning festive social media posts with c
 - *Keyboard users* can Tab through controls and press Enter/Space to activate.
 - *Multiple text boxes*: Click "Add New Text Box" to layer additional text.
 - *Logo selection*: Uploaded logos become the active object; adjust opacity for backgrounds.
-- *Search templates* by name or filter by category (Holiday, New Year, etc.).
+- *Search templates* by name or filter by category (Christmas, New Year, and any category you add).
 
 ## Customization
 
@@ -70,7 +70,7 @@ Edit `style.css` to customize:
 ```
 festive-post/
 ├── index.html                 # App entry point
-├── style.css                  # Responsive, theme-aware styles
+├── style.css                  # Responsive styles and color variables
 ├── script.js                  # Module coordinator
 ├── package.json               # Build & dependency config
 ├── js/
@@ -83,7 +83,7 @@ festive-post/
 │   ├── templates.json         # Metadata & categories
 │   ├── template1.png
 │   └── template2.png
-├── assets/                    # Static images & fonts
+├── assets/                    # Static images
 ├── dist/                      # Minified build (npm run build)
 └── README.md
 ```
@@ -92,9 +92,8 @@ festive-post/
 
 ```bash
 npm install          # Install dev tools (terser, css-minify)
-npm run dev          # Display development instructions
-npm run build        # Minify JS/CSS to /dist
-npm test             # Test placeholder
+npm run build        # Minify JS/CSS into dist/
+npm test             # Placeholder; no automated tests are defined yet
 ```
 
 ## Technologies
@@ -103,7 +102,7 @@ npm test             # Test placeholder
 - **CSS3:** Modern layout (grid/flexbox), CSS variables, responsive design
 - **JavaScript (ES6+ Modules):** Clean, event-driven architecture
 - **[Fabric.js](https://fabricjs.com/):** Canvas rendering & manipulation
-- **Google Fonts:** Playfair Display, Manrope
+- **Google Fonts:** Manrope, Playfair Display, Lobster, Mountains of Christmas
 
 ## Browser Support
 
@@ -115,15 +114,15 @@ npm test             # Test placeholder
 ## Performance
 
 - **Lazy-loaded templates:** IntersectionObserver defers image loading
-- **Client-side only:** No external API calls (except Fabric.js CDN)
-- **Optimized canvas:** 1080×1080 at 80% quality
+- **Client-side editing:** Fabric.js and Google Fonts load from CDNs; designs stay in the browser
+- **Canvas export:** 1080×1080 PNG or JPEG at full quality
 - **Minified build:** Terser compresses JS; css-minify compresses CSS
 
 ## Code Quality
 
 - **Modular architecture:** Separation of concerns across document handlers
 - **Error handling:** Graceful fallbacks for failed uploads/loads/exports
-- **Accessibility:** Full keyboard support, ARIA labels, focus management
+- **Accessibility:** Keyboard support for key controls, ARIA labels, and focus management
 - **Safe JSON parsing:** Try/catch around design file imports
 
 ## Contributing
@@ -132,7 +131,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-ISC (see [LICENSE](LICENSE))
+MIT (see [LICENSE](LICENSE))
 
 ---
 

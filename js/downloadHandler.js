@@ -20,23 +20,30 @@ function initializeDownloadHandler(canvas, downloadBtn, downloadFormatSelect) {
         downloadBtn.disabled = true;
         downloadBtn.textContent = 'Preparing download...';
 
-        canvas.toBlob((blob) => {
-            if (!blob) {
+        const restoreButton = () => {
+            downloadBtn.disabled = false;
+            downloadBtn.textContent = previousLabel;
+        };
+
+        try {
+            // Fabric's canvas exposes toDataURL, not the DOM canvas toBlob API.
+            const dataUrl = canvas.toDataURL({ format, quality: 1 });
+            if (!dataUrl) {
                 alert('Failed to generate image. Please try again.');
-                downloadBtn.disabled = false;
-                downloadBtn.textContent = previousLabel;
+                restoreButton();
                 return;
             }
 
-            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.href = url;
+            link.href = dataUrl;
             link.download = `festive-post.${format}`;
             link.click();
-            URL.revokeObjectURL(url);
-            downloadBtn.disabled = false;
-            downloadBtn.textContent = previousLabel;
-        }, `image/${format}`, 1); // Quality 1 for best quality
+            restoreButton();
+        } catch (error) {
+            console.error('Failed to generate image:', error);
+            alert('Failed to generate image. Please try again.');
+            restoreButton();
+        }
     });
 }
 
