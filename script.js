@@ -5,6 +5,33 @@
  * It initializes the canvas and all the modules.
  */
 
+import { loadTemplates, displayCategories, displayTemplates } from './js/templateHandler.js';
+import { initializeTextControls } from './js/textControls.js';
+import { initializeImageControls } from './js/imageControls.js';
+import { initializeSaveLoadHandler } from './js/saveLoadHandler.js';
+import { initializeDownloadHandler } from './js/downloadHandler.js';
+
+function setupRangeValueIndicators() {
+    const indicators = document.querySelectorAll('.range-value[data-for]');
+
+    indicators.forEach((indicator) => {
+        const inputId = indicator.getAttribute('data-for');
+        const input = document.getElementById(inputId);
+
+        if (!input) {
+            return;
+        }
+
+        const unit = indicator.getAttribute('data-unit') || '';
+        const render = () => {
+            indicator.textContent = `${input.value}${unit}`;
+        };
+
+        input.addEventListener('input', render);
+        render();
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Get all the necessary DOM elements
     const canvas = new fabric.Canvas('canvas');
@@ -38,6 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize variables
     let activeTextObject, logoImg, templates = [];
 
+    setupRangeValueIndicators();
+
     // Load templates and initialize the template gallery
     loadTemplates((loadedTemplates) => {
         templates = loadedTemplates;
@@ -58,14 +87,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initialize all the modules
-    initializeTextControls(canvas, activeTextObject, companyNameInput, brandColorInput, colorPalette, fontFamilySelect, textAlignButtons, fontSizeInput, textRotationInput, textOutlineWidthInput, textOutlineColorInput, textShadowColorInput, textShadowBlurInput, textShadowOffsetXInput, textShadowOffsetYInput, addTextBtn);
+    const textControlsApi = initializeTextControls(canvas, activeTextObject, companyNameInput, brandColorInput, colorPalette, fontFamilySelect, textAlignButtons, fontSizeInput, textRotationInput, textOutlineWidthInput, textOutlineColorInput, textShadowColorInput, textShadowBlurInput, textShadowOffsetXInput, textShadowOffsetYInput, addTextBtn);
     initializeImageControls(canvas, logoUpload, dropZone, logoOpacityInput, logoImg, imageFilters);
-    initializeSaveLoadHandler(canvas, saveDesignBtn, loadDesignBtn, loadDesignInput, activeTextObject, updateControls, resetControls);
+    initializeSaveLoadHandler(canvas, saveDesignBtn, loadDesignBtn, loadDesignInput, activeTextObject, textControlsApi.updateControls, textControlsApi.resetControls);
     initializeDownloadHandler(canvas, downloadBtn, downloadFormatSelect);
 
     // Event listener for the search input
     searchInput.addEventListener('input', () => {
-        const activeCategory = document.querySelector('.category-btn.active').textContent.toLowerCase();
+        const activeCategoryButton = document.querySelector('.category-btn.active');
+        const activeCategory = activeCategoryButton ? activeCategoryButton.textContent.toLowerCase() : 'all';
         displayTemplates(templates, activeCategory, searchInput.value, templateGallery, selectTemplate);
     });
 });

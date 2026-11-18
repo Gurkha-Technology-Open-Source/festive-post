@@ -29,6 +29,7 @@ async function loadTemplates(callback) {
  * @param {function} displayTemplatesCallback - The callback function to display the templates.
  */
 function displayCategories(templates, categoryFilters, displayTemplatesCallback) {
+    categoryFilters.innerHTML = '';
     const categories = ['all', ...new Set(templates.map(t => t.category))];
     categories.forEach(category => {
         const btn = document.createElement('button');
@@ -56,39 +57,61 @@ function displayCategories(templates, categoryFilters, displayTemplatesCallback)
 function displayTemplates(templates, category, searchTerm = '', templateGallery, selectTemplateCallback) {
     templateGallery.innerHTML = '';
     let filteredTemplates = category === 'all' ? templates : templates.filter(t => t.category === category);
+    const normalizedSearchTerm = searchTerm.trim().toLowerCase();
 
-    if (searchTerm) {
-        filteredTemplates = filteredTemplates.filter(t => t.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    if (normalizedSearchTerm) {
+        filteredTemplates = filteredTemplates.filter(t => t.name.toLowerCase().includes(normalizedSearchTerm));
     }
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                observer.unobserve(img);
-            }
+    if (filteredTemplates.length === 0) {
+        const emptyState = document.createElement('p');
+        emptyState.textContent = 'No templates found for this filter.';
+        emptyState.classList.add('template-empty-state');
+        templateGallery.appendChild(emptyState);
+        return;
+    }
+
+    const observer = 'IntersectionObserver' in window
+        ? new IntersectionObserver((entries, io) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    io.unobserve(img);
+                }
+            });
+        })
+        : null;
+
+    const renderTemplateSelection = (item, templatePath) => {
+        selectTemplateCallback(templatePath);
+        document.querySelectorAll('.template-item').forEach(el => {
+            el.classList.remove('selected');
+            el.setAttribute('aria-selected', 'false');
         });
-    });
+        item.classList.add('selected');
+        item.setAttribute('aria-selected', 'true');
+    };
 
     filteredTemplates.forEach(template => {
         const img = document.createElement('img');
         img.dataset.src = template.thumbnail;
         img.alt = template.name;
-        observer.observe(img);
+
+        if (observer) {
+            observer.observe(img);
+        } else {
+            img.src = template.thumbnail;
+        }
+
         const item = document.createElement('div');
         item.classList.add('template-item');
         item.setAttribute('role', 'option');
+        item.setAttribute('aria-selected', 'false');
         item.setAttribute('tabindex', '0');
         item.appendChild(img);
         item.addEventListener('click', () => {
-            selectTemplateCallback(template.path);
-            document.querySelectorAll('.template-item').forEach(el => {
-                el.classList.remove('selected');
-                el.setAttribute('aria-selected', 'false');
-            });
-            item.classList.add('selected');
-            item.setAttribute('aria-selected', 'true');
+            renderTemplateSelection(item, template.path);
         });
         item.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {

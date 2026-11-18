@@ -15,10 +15,48 @@
  */
 function initializeImageControls(canvas, logoUpload, dropZone, logoOpacityInput, logoImg, imageFilters) {
 
+    function applyBackgroundFilter(filterType, activeButton) {
+        if (!imageFilters) {
+            return;
+        }
+
+        imageFilters.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+
+        if (!canvas.backgroundImage) {
+            return;
+        }
+
+        canvas.backgroundImage.filters = [];
+        if (filterType === 'grayscale') {
+            canvas.backgroundImage.filters.push(new fabric.Image.filters.Grayscale());
+        } else if (filterType === 'sepia') {
+            canvas.backgroundImage.filters.push(new fabric.Image.filters.Sepia());
+        } else if (filterType === 'invert') {
+            canvas.backgroundImage.filters.push(new fabric.Image.filters.Invert());
+        }
+
+        canvas.backgroundImage.applyFilters();
+        canvas.renderAll();
+    }
+
     // Event listeners
     logoUpload.addEventListener('change', (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files && e.target.files[0];
         handleLogoFile(file);
+    });
+
+    dropZone.addEventListener('click', () => {
+        logoUpload.click();
+    });
+
+    dropZone.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            logoUpload.click();
+        }
     });
 
     dropZone.addEventListener('dragover', (e) => {
@@ -43,54 +81,65 @@ function initializeImageControls(canvas, logoUpload, dropZone, logoOpacityInput,
      * @param {File} file - The logo file.
      */
     function handleLogoFile(file) {
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (f) => {
-                const img = new Image();
-                img.onload = () => {
-                    const tempCanvas = document.createElement('canvas');
-                    const MAX_WIDTH = 400; // Max width for the logo
-                    const MAX_HEIGHT = 400; // Max height for the logo
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-                    tempCanvas.width = width;
-                    tempCanvas.height = height;
-                    const ctx = tempCanvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const dataURL = tempCanvas.toDataURL('image/png', 0.8); // Compress to PNG with 80% quality
-
-                    fabric.Image.fromURL(dataURL, (fabricImg) => {
-                        if (logoImg) {
-                            canvas.remove(logoImg);
-                        }
-                        logoImg = fabricImg;
-                        logoImg.set({
-                            left: canvas.width / 2,
-                            top: 100,
-                            originX: 'center',
-                            opacity: parseFloat(logoOpacityInput.value)
-                        });
-                        canvas.add(logoImg);
-                        canvas.renderAll();
-                    });
-                };
-                img.src = f.target.result;
-            };
-            reader.readAsDataURL(file);
+        if (!file) {
+            return;
         }
+
+        if (!file.type.startsWith('image/')) {
+            alert('Please upload a valid image file.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (f) => {
+            const img = new Image();
+            img.onload = () => {
+                const tempCanvas = document.createElement('canvas');
+                const MAX_WIDTH = 400;
+                const MAX_HEIGHT = 400;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+
+                tempCanvas.width = width;
+                tempCanvas.height = height;
+                const ctx = tempCanvas.getContext('2d');
+
+                if (!ctx) {
+                    return;
+                }
+
+                ctx.drawImage(img, 0, 0, width, height);
+                const dataURL = tempCanvas.toDataURL('image/png', 0.8);
+
+                fabric.Image.fromURL(dataURL, (fabricImg) => {
+                    if (logoImg) {
+                        canvas.remove(logoImg);
+                    }
+                    logoImg = fabricImg;
+                    logoImg.set({
+                        left: canvas.width / 2,
+                        top: 100,
+                        originX: 'center',
+                        opacity: parseFloat(logoOpacityInput.value)
+                    });
+                    canvas.add(logoImg);
+                    canvas.setActiveObject(logoImg);
+                    canvas.renderAll();
+                });
+            };
+            img.src = f.target.result;
+        };
+        reader.readAsDataURL(file);
     }
 
     logoOpacityInput.addEventListener('input', () => {
@@ -100,50 +149,20 @@ function initializeImageControls(canvas, logoUpload, dropZone, logoOpacityInput,
         }
     });
 
-    imageFilters.addEventListener('click', (e) => {
-        if (e.target.classList.contains('filter-btn')) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-
-            const filterType = e.target.dataset.filter;
-            if (canvas.backgroundImage) {
-                canvas.backgroundImage.filters = [];
-                if (filterType === 'grayscale') {
-                    canvas.backgroundImage.filters.push(new fabric.Image.filters.Grayscale());
-                } else if (filterType === 'sepia') {
-                    canvas.backgroundImage.filters.push(new fabric.Image.filters.Sepia());
-                } else if (filterType === 'invert') {
-                    canvas.backgroundImage.filters.push(new fabric.Image.filters.Invert());
-                }
-                canvas.backgroundImage.applyFilters();
-                canvas.renderAll();
+    if (imageFilters) {
+        imageFilters.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                applyBackgroundFilter(e.target.dataset.filter, e.target);
             }
-        }
-    });
+        });
 
-    imageFilters.addEventListener('keydown', (e) => {
-        if (e.target.classList.contains('filter-btn')) {
-            if (e.key === 'Enter' || e.key === ' ') {
+        imageFilters.addEventListener('keydown', (e) => {
+            if (e.target.classList.contains('filter-btn') && (e.key === 'Enter' || e.key === ' ')) {
                 e.preventDefault();
-                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-
-                const filterType = e.target.dataset.filter;
-                if (canvas.backgroundImage) {
-                    canvas.backgroundImage.filters = [];
-                    if (filterType === 'grayscale') {
-                        canvas.backgroundImage.filters.push(new fabric.Image.filters.Grayscale());
-                    } else if (filterType === 'sepia') {
-                        canvas.backgroundImage.filters.push(new fabric.Image.filters.Sepia());
-                    } else if (filterType === 'invert') {
-                        canvas.backgroundImage.filters.push(new fabric.Image.filters.Invert());
-                    }
-                    canvas.backgroundImage.applyFilters();
-                    canvas.renderAll();
-                }
+                applyBackgroundFilter(e.target.dataset.filter, e.target);
             }
-        }
-    });
+        });
+    }
 
 }
 

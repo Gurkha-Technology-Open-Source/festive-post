@@ -4,13 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="description" content="Create stunning festive social media posts with custom logos, text effects, templates, and instant downloads.">
+    <meta name="theme-color" content="#c93f2d">
+    <meta property="og:title" content="Festive Post Generator">
+    <meta property="og:description" content="Build festive brand visuals with fast template, text, and export controls.">
+    <meta property="og:type" content="website">
     <title>Festive Post Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Festive Post Generator</h1>
+        <header class="page-header">
+            <p class="eyebrow">Creative Suite</p>
+            <h1>Festive Post Generator</h1>
+            <p class="subtitle">Build festive brand visuals with fast template, text, and export controls.</p>
+        </header>
         <div class="main-content">
             <div class="controls">
                 <h2>Customize Your Post</h2>
@@ -21,7 +33,10 @@
                 </div>
                 <div class="control-group">
                     <label for="logo-opacity">Logo Opacity:</label>
-                    <input type="range" id="logo-opacity" min="0" max="1" step="0.01" value="1" aria-label="Change logo opacity">
+                    <div class="range-control">
+                        <input type="range" id="logo-opacity" min="0" max="1" step="0.01" value="1" aria-label="Change logo opacity">
+                        <span class="range-value" data-for="logo-opacity"></span>
+                    </div>
                 </div>
                 <div class="control-group">
                     <label for="company-name">Text Content:</label>
@@ -63,15 +78,24 @@
                 </div>
                 <div class="control-group">
                     <label for="font-size">Font Size:</label>
-                    <input type="range" id="font-size" min="10" max="100" value="60" aria-label="Change font size">
+                    <div class="range-control">
+                        <input type="range" id="font-size" min="10" max="100" value="60" aria-label="Change font size">
+                        <span class="range-value" data-for="font-size" data-unit="px"></span>
+                    </div>
                 </div>
                 <div class="control-group">
                     <label for="text-rotation">Rotation:</label>
-                    <input type="range" id="text-rotation" min="-180" max="180" value="0" aria-label="Rotate text">
+                    <div class="range-control">
+                        <input type="range" id="text-rotation" min="-180" max="180" value="0" aria-label="Rotate text">
+                        <span class="range-value" data-for="text-rotation" data-unit="deg"></span>
+                    </div>
                 </div>
                 <div class="control-group">
                     <label for="text-outline-width">Outline Width:</label>
-                    <input type="range" id="text-outline-width" min="0" max="5" value="0" aria-label="Change text outline width">
+                    <div class="range-control">
+                        <input type="range" id="text-outline-width" min="0" max="5" value="0" aria-label="Change text outline width">
+                        <span class="range-value" data-for="text-outline-width"></span>
+                    </div>
                 </div>
                 <div class="control-group">
                     <label for="text-outline-color">Outline Color:</label>
@@ -83,15 +107,24 @@
                 </div>
                 <div class="control-group">
                     <label for="text-shadow-blur">Shadow Blur:</label>
-                    <input type="range" id="text-shadow-blur" min="0" max="20" value="0" aria-label="Change text shadow blur">
+                    <div class="range-control">
+                        <input type="range" id="text-shadow-blur" min="0" max="20" value="0" aria-label="Change text shadow blur">
+                        <span class="range-value" data-for="text-shadow-blur"></span>
+                    </div>
                 </div>
                 <div class="control-group">
                     <label for="text-shadow-offset-x">Shadow Offset X:</label>
-                    <input type="range" id="text-shadow-offset-x" min="-20" max="20" value="0" aria-label="Change text shadow offset x">
+                    <div class="range-control">
+                        <input type="range" id="text-shadow-offset-x" min="-20" max="20" value="0" aria-label="Change text shadow offset x">
+                        <span class="range-value" data-for="text-shadow-offset-x"></span>
+                    </div>
                 </div>
                 <div class="control-group">
                     <label for="text-shadow-offset-y">Shadow Offset Y:</label>
-                    <input type="range" id="text-shadow-offset-y" min="-20" max="20" value="0" aria-label="Change text shadow offset y">
+                    <div class="range-control">
+                        <input type="range" id="text-shadow-offset-y" min="-20" max="20" value="0" aria-label="Change text shadow offset y">
+                        <span class="range-value" data-for="text-shadow-offset-y"></span>
+                    </div>
                 </div>
                 <div class="control-group">
                     <label>Image Filters:</label>
@@ -124,15 +157,11 @@
             </div>
             <div class="preview">
                 <h2>Preview</h2>
+                <p class="preview-hint">Tip: click any text on canvas to edit style controls instantly.</p>
                 <canvas id="canvas" width="1080" height="1080"></canvas>
             </div>
         </div>
     </div>
-    <script type="module" src="js/templateHandler.js"></script>
-    <script type="module" src="js/textControls.js"></script>
-    <script type="module" src="js/imageControls.js"></script>
-    <script type="module" src="js/saveLoadHandler.js"></script>
-    <script type="module" src="js/downloadHandler.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
